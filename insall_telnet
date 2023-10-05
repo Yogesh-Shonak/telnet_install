@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Git Repository') {
+            steps {
+                git url: 'https://github.com/Yogesh-Shonak/telnet_install.git'
+            }
+        }
+
+        stage('Install Telnet') {
+            steps {
+                script {
+                    // Assuming you have SSH access to the 2nd machine
+                    sshUserPrivateKey(credentialsId: 'your-ssh-credentials', keyFileVariable: '', passphrase: '', username: 'root', remote: [host: '192.168.148.144', port: 22])
+                    sshCommand remote: [host: 'second-machine-ip', port: 22], command: 'sudo apt-get update && sudo apt-get install -y telnet'
+                }
+            }
+        }
+    }
+}
